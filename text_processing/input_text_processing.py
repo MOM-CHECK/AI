@@ -11,10 +11,14 @@ def word_spacing_correction(text):
     correct_spacing_text = spacing(without_spacing_text)
     return correct_spacing_text
 
-async def orthography_examination(text):
+def orthography_examination(text):
     spell_checker = spell_init()
-    correct_spell_text = spell_checker(text)
-    return correct_spell_text
+    try:
+        correct_spell_text = spell_checker(text)
+        return correct_spell_text
+    except Exception as e:
+        logging.error("라이브러리 상의 이유로 맞춤법 검사가 어렵습니다.")
+        return text
 
 def morpheme_analyzer(text):
     okt = Okt()
