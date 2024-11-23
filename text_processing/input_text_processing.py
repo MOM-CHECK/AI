@@ -26,3 +26,9 @@ def morpheme_analyzer(text):
     morpheme_text = ' '.join(morphemes)
     morpheme_text = re.sub(r'\s+\.', '.', morpheme_text)
     return morpheme_text
+
+def text_processing(text):
+    correct_spell = orthography_examination(text)
+    correct_spacing = word_spacing_correction(correct_spell)
+    final_correct_text = morpheme_analyzer(correct_spacing)
+    return final_correct_text
