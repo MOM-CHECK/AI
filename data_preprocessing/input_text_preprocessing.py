@@ -30,5 +30,5 @@ def morpheme_analyzer(text):
 def text_processing(text):
     correct_spell = orthography_examination(text)
     correct_spacing = word_spacing_correction(correct_spell)
-    final_correct_text = morpheme_analyzer(correct_spacing)
-    return final_correct_text
+    # final_correct_text = morpheme_analyzer(correct_spacing)
+    return correct_spacing
