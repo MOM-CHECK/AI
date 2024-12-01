@@ -4,26 +4,38 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from fastapi import status
 
-from text_processing.input_text_processing import *
+from emotion_prediction.emotion_predict import predict
+
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:8080/emotions"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class InputText(BaseModel):
     text: str
 
-@app.post("/text-processing")
-async def text_processing(inputText: InputText):
+@app.post("/emotions")
+def emotion_prediction(inputText: InputText):
     try:
-        correct_spell = await orthography_examination(inputText.text)
-        correct_spacing = word_spacing_correction(correct_spell)
-        final_correct_text = morpheme_analyzer(correct_spacing)
+        emotion = predict(inputText)
 
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
             content={
                 "statusCode": 201,
-                "message": "데이터 전처리 되었습니다.",
-                "correct_text": final_correct_text
+                "message": "사용자의 감정이 정상적으로 예측되었습니다.",
+                "emotion": emotion
             }
         )
     except Exception as e:
@@ -33,7 +45,7 @@ async def text_processing(inputText: InputText):
             content={
                 "statusCode": 500,
                 "data": {
-                    "message": ['텍스트 전처리를 실패했습니다.'],
+                    "message": ['서버 상의 이유로 감정 예측을 실패하였습니다.'],
                 }
             }
         )
